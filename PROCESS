@@ -1,0 +1,33 @@
+INTRODUCTION
+
+•	On Apple Silicon, it is possible to emulate X86_64 architectures by using UTM. However, many virtual machines (VMs) are created using VMware or VirtualBox, which cannot be directly imported into UTM. This can be a problem for users who want to use their existing VMs on Apple Silicon. 
+•	You can convert a VirtualBox/VMware image into a QEMU image, which is compatible with UTM. The conversion process involves several steps, including unpacking OVF (Open Virtualization Format) file, converting the VMDK file to a QEMU image format using the ‘qemu-img’ command, and then importing the QEMU image into UTM.
+•	To perform the conversion process, you will need to have QEMU and VirtualBox installed on your Mac. You will also need basic knowledge of the command line interface (CLI) to run the commands.
+•	This guide will take you through every step of the conversion process, providing clear instructions and examples. By following these steps, you will be able to convert your current VirtualBox/VMWare images to QEMU images and utilize them on your Mac that has an Apple Silicon chip by using UTM.
+
+
+Install HomeBrew on your Apple ARM system.
+•	Follow this instructional to install Homebrew:
+Just enter this code into Mac M1 – {/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"}
+
+Install QEMU emulator and virtualizer.
+•	In order to convert a VMware Virtual Machine Disk (VMDK) image to QEMU Copy-On-Write version 2 (QCOW2) format, we need to use QEMU. QEMU is a free and open-source emulator that allows users to run a virtual machine on their host system.
+•	To perform the conversion, we first need to ensure that QEMU is installed on our system. Once we have installed QEMU, we can use the ‘qemu-img’ command-line tool to convert the VMDK image to the QCOW2 format.
+•	To install QEMU using Homebrew, enter the following command in your Terminal: brew install qemu
+
+
+Unpack the Open Virtualization Format Archive (OVA) or Open Virtualization Format (OVF)
+•	Step 2 is only applicable to OVA/OVF images. VMware has the option to extract VMs to a folder, which includes the VMDK file.
+•	VirtualBox can export a Virtual Machine to an Open Virtualization Format Archive (OVA) or Open Virtualization Format (OVF)
+•	You can extract the OVA image using the below command:
+-	{mkdir vmName && tar -xvf vmName.ova -C vmName}
+
+•	After unpacking the OVA file, you should have the vmName-disk1.vmdk.
+
+
+Convert VMDK to QCOW2
+•	The ‘qemu-img’ tool provides several options for converting virtual disk images, including the ‘-f’ option to specify the input format (in this case, VMDK) and the ‘-O’ option to specify the output format (in this case, QCOW2).
+•	It is important to note that the conversion process may take some time, depending on the size of the VMDK image and your system’s speed. Once the conversion is complete, you should have a QCOW2 image that can be used with QEMU or other virtualization software.
+•	To convert VMDK to QCOW2, enter the following command in your Terminal (*replace vmName): { qemu-img convert -f vmdk -O qcow2 vmName-disk1.vmdk  vmName-disk1.qcow2 }
+After that we simply open UTM and click + button and then ‘emulate’ and click on ‘other’ click on “skip iso boot” continue > select ram usage as per your requirements > specify the size of the drive where the data will stored into then continue > continue > give the virtual machine name and click on ‘Open VM Settings’. option and save  > Then an new settings page will open and now we had to set some settings over here go to “QEMU” 	option and uncheck the ‘UEFI BOOT’ and check the ‘use local time for baser clock’ > after that we need to go “IDE DRIVE” Section and delete it and click on “NEW” section and then import the .qcow2 file and save it and now it being take some time to run and the installation was successful.
+
